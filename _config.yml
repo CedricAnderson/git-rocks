@@ -1,14 +1,11 @@
 # Site settings
-title: Your awesome title
-email: your-email@domain.com
-description: > # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
-baseurl: "" # the subpath of your site, e.g. /blog/
-url: "http://yourdomain.com" # the base hostname & protocol for your site
-twitter_username: jekyllrb
-github_username:  jekyll
+title: Git Rocks
+email: vincent@git.rocks
+description: Git Rocks is an interactive tutorial for Git from getting started to release management
+baseurl: ""
+url: "http://git.rocks"
+twitter_username: git_rocks
+github_username:  vlamanna/git-rocks
 
 # Build settings
 markdown: kramdown

@@ -2,22 +2,15 @@
 layout: default
 ---
 
-<div class="home">
-
-  <h1 class="page-heading">Posts</h1>
-
-  <ul class="post-list">
-    {% for post in site.posts %}
-      <li>
-        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
-
-        <h2>
-          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h2>
-      </li>
-    {% endfor %}
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
-
+<div class="jumbotron">
+  <div class="container">
+    <h1>Welcome to <span class="site-title text-nowrap">
+        <span class="site-title-git">git</span>
+        <i class="fa fa-bolt"></i>
+        <span class="site-title-rocks">ROCKS</span>
+      </span>
+    </h1>
+    <p>Try our interactive tutorial to help you master Git. We cover from getting started to release management.</p>
+    <p><a class="btn btn-primary btn-lg" href="{{ site.baseurl }}getting-started" role="button">Get started now!</a></p>
+  </div>
 </div>
