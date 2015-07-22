@@ -1,0 +1,25 @@
+.site-title {
+	&,
+    &:hover {
+        text-decoration: none;
+    }
+
+    .site-title-git {
+        font-family: Georgia, serif;
+        letter-spacing: 1px;
+    }
+
+    .site-title-rocks {
+        font-family: 'Metal Mania', cursive;
+    }
+}
+
+.navbar {
+	.site-title {
+		color: #eee;
+	}
+}
+
+body {
+	margin-top: 50px;
+}
