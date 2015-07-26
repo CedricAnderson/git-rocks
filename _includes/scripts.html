@@ -2,7 +2,10 @@
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src="{{ "/assets/js/jquery.mousewheel-min.js" | prepend: site.baseurl }}"></script>
 <script src="{{ "/assets/js/jquery.terminal-min.js" | prepend: site.baseurl }}"></script>
-<script src="{{ "/assets/js/gitrocks.js" | prepend: site.baseurl }}"></script>
+{% if page.tutorial %}
+<script src="{{ site.baseurl}}/assets/js/gitrocks.{{page.tutorial}}.js"></script>
+<script src="{{ "/assets/js/gitrocks.main.js" | prepend: site.baseurl }}"></script>
+{% endif %}
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
