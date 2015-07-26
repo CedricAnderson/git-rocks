@@ -1,8 +1,8 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+{% if page.tutorial %}
 <script src="{{ "/assets/js/jquery.mousewheel-min.js" | prepend: site.baseurl }}"></script>
 <script src="{{ "/assets/js/jquery.terminal-min.js" | prepend: site.baseurl }}"></script>
-{% if page.tutorial %}
 <script src="{{ site.baseurl}}/assets/js/gitrocks.{{page.tutorial}}.js"></script>
 <script src="{{ "/assets/js/gitrocks.main.js" | prepend: site.baseurl }}"></script>
 {% endif %}
