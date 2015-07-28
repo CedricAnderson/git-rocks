@@ -11,6 +11,7 @@ jQuery(function($, undefined) {
                     term.echo(output[line]);
                 }
             }
+            term.echo(' ');
             term.echo('**********');
             term.echo(gitRocks.getCurrentSuccess());
 
