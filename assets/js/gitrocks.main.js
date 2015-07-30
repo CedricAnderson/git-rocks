@@ -18,6 +18,7 @@ jQuery(function($, undefined) {
             gitRocks.currentStep = gitRocks.currentStep + 1;
 
             if (gitRocks.currentStep >= gitRocks.nbSteps) {
+                term.echo('* ');
                 term.echo('* Congratulation, you just finished this tutorial.');
                 $('#gitrocks-next').removeClass('hide');
             } else {
