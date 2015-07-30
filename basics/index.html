@@ -1,0 +1,233 @@
+---
+layout: tutorial
+title: The basics - Git Rocks
+headline: The basics about Git
+excerpt: Learn the basics about Git with this tutorial
+tutorial: basics
+next: branches
+---
+
+<hr>
+<h3>New Git commands used in this tutorial</h3>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingClone">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseClone" aria-expanded="true" aria-controls="collapseClone">
+          git-clone
+        </a>
+      </h4>
+    </div>
+    <div id="collapseClone" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingClone">
+      <div class="panel-body">
+        <h5>Clone a repository into a new directory.</h5>
+        <p><b>USAGE</b></p>
+        <pre>
+git clone [--template=&lt;template_directory&gt;]
+          [-l] [-s] [--no-hardlinks] [-q] [-n] [--bare] [--mirror]
+          [-o &lt;name&gt;] [-b &lt;name&gt;] [-u &lt;upload-pack&gt;] [--reference &lt;repository&gt;]
+          [--dissociate] [--separate-git-dir &lt;git dir&gt;]
+          [--depth &lt;depth&gt;] [--[no-]single-branch]
+          [--recursive | --recurse-submodules] [--] &lt;repository&gt;
+          [&lt;directory&gt;]
+        </pre>
+        <p><b>DESCRIPTION</b></p>
+        <p>
+        Clones a repository into a newly created directory, creates remote-tracking branches for each branch in the cloned
+        repository (visible using git branch -r), and creates and checks out an initial branch that is forked from the cloned
+        repository's currently active branch.
+        <br><br>
+        After the clone, a plain git fetch without arguments will update all the remote-tracking branches, and a git pull without
+        arguments will in addition merge the remote master branch into the current master branch, if any (this is untrue when
+        "--single-branch" is given; see below).
+        <br><br>
+        This default configuration is achieved by creating references to the remote branch heads under refs/remotes/origin and by
+        initializing remote.origin.url and remote.origin.fetch configuration variables.
+        </p>
+        <p><b>OPTIONS</b></p>
+        <pre>
+   --local, -l
+       When the repository to clone from is on a local machine, this flag bypasses the normal "Git aware" transport mechanism
+       and clones the repository by making a copy of HEAD and everything under objects and refs directories. The files under
+       .git/objects/ directory are hardlinked to save space when possible.
+
+       If the repository is specified as a local path (e.g., /path/to/repo), this is the default, and --local is essentially a
+       no-op. If the repository is specified as a URL, then this flag is ignored (and we never use the local optimizations).
+       Specifying --no-local will override the default when /path/to/repo is given, using the regular Git transport instead.
+
+   --no-hardlinks
+       Force the cloning process from a repository on a local filesystem to copy the files under the .git/objects directory
+       instead of using hardlinks. This may be desirable if you are trying to make a back-up of your repository.
+
+   --shared, -s
+       When the repository to clone is on the local machine, instead of using hard links, automatically setup
+       .git/objects/info/alternates to share the objects with the source repository. The resulting repository starts out
+       without any object of its own.
+
+       NOTE: this is a possibly dangerous operation; do not use it unless you understand what it does. If you clone your
+       repository using this option and then delete branches (or use any other Git command that makes any existing commit
+       unreferenced) in the source repository, some objects may become unreferenced (or dangling). These objects may be
+       removed by normal Git operations (such as git commit) which automatically call git gc --auto. (See git-gc(1).) If these
+       objects are removed and were referenced by the cloned repository, then the cloned repository will become corrupt.
+
+       Note that running git repack without the -l option in a repository cloned with -s will copy objects from the source
+       repository into a pack in the cloned repository, removing the disk space savings of clone -s. It is safe, however, to
+       run git gc, which uses the -l option by default.
+
+       If you want to break the dependency of a repository cloned with -s on its source repository, you can simply run git
+       repack -a to copy all objects from the source repository into a pack in the cloned repository.
+
+   --reference &lt;repository&gt;
+       If the reference repository is on the local machine, automatically setup .git/objects/info/alternates to obtain objects
+       from the reference repository. Using an already existing repository as an alternate will require fewer objects to be
+       copied from the repository being cloned, reducing network and local storage costs.
+
+       NOTE: see the NOTE for the --shared option, and also the --dissociate option.
+
+   --dissociate
+       Borrow the objects from reference repositories specified with the --reference options only to reduce network transfer
+       and stop borrowing from them after a clone is made by making necessary local copies of borrowed objects.
+
+   --quiet, -q
+       Operate quietly. Progress is not reported to the standard error stream. This flag is also passed to the `rsync' command
+       when given.
+
+   --verbose, -v
+       Run verbosely. Does not affect the reporting of progress status to the standard error stream.
+
+   --progress
+       Progress status is reported on the standard error stream by default when it is attached to a terminal, unless -q is
+       specified. This flag forces progress status even if the standard error stream is not directed to a terminal.
+
+   --no-checkout, -n
+       No checkout of HEAD is performed after the clone is complete.
+
+   --bare
+       Make a bare Git repository. That is, instead of creating &lt;directory&gt; and placing the administrative files in
+       &lt;directory&gt;/.git, make the &lt;directory&gt; itself the $GIT_DIR. This obviously implies the -n because there is nowhere to
+       check out the working tree. Also the branch heads at the remote are copied directly to corresponding local branch
+       heads, without mapping them to refs/remotes/origin/. When this option is used, neither remote-tracking branches nor the
+       related configuration variables are created.
+
+   --mirror
+       Set up a mirror of the source repository. This implies --bare. Compared to --bare, --mirror not only maps local
+       branches of the source to local branches of the target, it maps all refs (including remote-tracking branches, notes
+       etc.) and sets up a refspec configuration such that all these refs are overwritten by a git remote update in the target
+       repository.
+
+   --origin &lt;name&gt;, -o &lt;name&gt;
+       Instead of using the remote name origin to keep track of the upstream repository, use &lt;name&gt;.
+
+   --branch &lt;name&gt;, -b &lt;name&gt;
+       Instead of pointing the newly created HEAD to the branch pointed to by the cloned repository's HEAD, point to &lt;name&gt;
+       branch instead. In a non-bare repository, this is the branch that will be checked out.  --branch can also take tags and
+       detaches the HEAD at that commit in the resulting repository.
+
+   --upload-pack &lt;upload-pack&gt;, -u &lt;upload-pack&gt;
+       When given, and the repository to clone from is accessed via ssh, this specifies a non-default path for the command run
+       on the other end.
+
+   --template=&lt;template_directory&gt;
+       Specify the directory from which templates will be used; (See the "TEMPLATE DIRECTORY" section of git-init(1).)
+
+   --config &lt;key&gt;=&lt;value&gt;, -c &lt;key&gt;=&lt;value&gt;
+       Set a configuration variable in the newly-created repository; this takes effect immediately after the repository is
+       initialized, but before the remote history is fetched or any files checked out. The key is in the same format as
+       expected by git-config(1) (e.g., core.eol=true). If multiple values are given for the same key, each value will be
+       written to the config file. This makes it safe, for example, to add additional fetch refspecs to the origin remote.
+
+   --depth &lt;depth&gt;
+       Create a shallow clone with a history truncated to the specified number of revisions.
+
+   --[no-]single-branch
+       Clone only the history leading to the tip of a single branch, either specified by the --branch option or the primary
+       branch remote's HEAD points at. When creating a shallow clone with the --depth option, this is the default, unless
+       --no-single-branch is given to fetch the histories near the tips of all branches. Further fetches into the resulting
+       repository will only update the remote-tracking branch for the branch this option was used for the initial cloning. If
+       the HEAD at the remote did not point at any branch when --single-branch clone was made, no remote-tracking branch is
+       created.
+
+   --recursive, --recurse-submodules
+       After the clone is created, initialize all submodules within, using their default settings. This is equivalent to
+       running git submodule update --init --recursive immediately after the clone is finished. This option is ignored if the
+       cloned repository does not have a worktree/checkout (i.e. if any of --no-checkout/-n, --bare, or --mirror is given)
+
+   --separate-git-dir=&lt;git dir&gt;
+       Instead of placing the cloned repository where it is supposed to be, place the cloned repository at the specified
+       directory, then make a filesystem-agnostic Git symbolic link to there. The result is Git repository can be separated
+       from working tree.
+
+   &lt;repository&gt;
+       The (possibly remote) repository to clone from. See the URLS section below for more information on specifying
+       repositories.
+
+   &lt;directory&gt;
+       The name of a new directory to clone into. The "humanish" part of the source repository is used if no directory is
+       explicitly given (repo for /path/to/repo.git and foo for host.xz:foo/.git). Cloning into an existing directory is only
+       allowed if the directory is empty.
+        </pre>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingPull">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsePull" aria-expanded="false" aria-controls="collapsePull">
+          git-pull
+        </a>
+      </h4>
+    </div>
+    <div id="collapsePull" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingPull">
+      <div class="panel-body">
+        <h5>Fetch from and integrate with another repository or a local branch.</h5>
+        <p><b>USAGE</b></p>
+        <pre>
+git pull [options] [&lt;repository&gt; [&lt;refspec&gt;...]]
+        </pre>
+        <p><b>DESCRIPTION</b></p>
+        <p>
+        Incorporates changes from a remote repository into the current branch. In its default mode, git pull is shorthand for git
+        fetch followed by git merge FETCH_HEAD.
+<br><br>
+        More precisely, git pull runs git fetch with the given parameters and calls git merge to merge the retrieved branch heads
+        into the current branch. With --rebase, it runs git rebase instead of git merge.
+<br><br>
+        &lt;repository&gt; should be the name of a remote repository as passed to git-fetch(1). &lt;refspec&gt; can name an arbitrary remote
+        ref (for example, the name of a tag) or even a collection of refs with corresponding remote-tracking branches (e.g.,
+        refs/heads/*:refs/remotes/origin/*), but usually it is the name of a branch in the remote repository.
+<br><br>
+        Default values for &lt;repository&gt; and &lt;branch&gt; are read from the "remote" and "merge" configuration for the current branch as
+        set by git-branch(1) --track.
+<br><br>
+        See git-merge(1) for details, including how conflicts are presented and handled.
+<br><br>
+        In Git 1.7.0 or later, to cancel a conflicting merge, use git reset --merge. Warning: In older versions of Git, running git
+        pull with uncommitted changes is discouraged: while possible, it leaves you in a state that may be hard to back out of in
+        the case of a conflict.
+<br><br>
+        If any of the remote changes overlap with local uncommitted changes, the merge will be automatically cancelled and the work
+        tree untouched. It is generally best to get any local changes in working order before pulling or stash them away with git-
+        stash(1).
+        </p>
+        <p><b>OPTIONS</b></p>
+        <pre>
+   Options meant for git pull itself and the underlying git merge must be given before the options meant for git fetch.
+
+   -q, --quiet
+       This is passed to both underlying git-fetch to squelch reporting of during transfer, and underlying git-merge to
+       squelch output during merging.
+
+   -v, --verbose
+       Pass --verbose to git-fetch and git-merge.
+
+   --[no-]recurse-submodules[=yes|on-demand|no]
+       This option controls if new commits of all populated submodules should be fetched too (see git-config(1) and
+       gitmodules(5)). That might be necessary to get the data needed for merging submodule commits, a feature Git learned in
+       1.7.3. Notice that the result of a merge will not be checked out in the submodule, "git submodule update" has to be
+       called afterwards to bring the work tree up to date with the merge result.
+		</pre>
+      </div>
+    </div>
+  </div>
+</div>
