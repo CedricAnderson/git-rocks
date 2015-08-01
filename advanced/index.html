@@ -1,0 +1,237 @@
+---
+layout: tutorial
+title: Getting more serious - Git Rocks
+headline: Getting more serious with Git
+excerpt: Learn more advanced commands about Git with this tutorial
+tutorial: advanced
+next: branches
+---
+
+<hr>
+<h3>New Git commands used in this tutorial</h3>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingStash">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseStash" aria-expanded="true" aria-controls="collapseStash">
+          git-stash
+        </a>
+      </h4>
+    </div>
+    <div id="collapseStash" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingStash">
+      <div class="panel-body">
+        <h5>Stash the changes in a dirty working directory away.</h5>
+        <p><b>USAGE</b></p>
+        <pre>
+git stash list [&lt;options&gt;]
+git stash show [&lt;stash&gt;]
+git stash drop [-q|--quiet] [&lt;stash&gt;]
+git stash ( pop | apply ) [--index] [-q|--quiet] [&lt;stash&gt;]
+git stash branch &lt;branchname&gt; [&lt;stash&gt;]
+git stash [save [-p|--patch] [-k|--[no-]keep-index] [-q|--quiet]
+          [-u|--include-untracked] [-a|--all] [&lt;message&gt;]]
+git stash clear
+git stash create [&lt;message&gt;]
+git stash store [-m|--message &lt;message&gt;] [-q|--quiet] &lt;commit&gt;
+        </pre>
+        <p><b>DESCRIPTION</b></p>
+        <p>
+        Use git stash when you want to record the current state of the working directory and the index, but
+        want to go back to a clean working directory. The command saves your local modifications away and
+        reverts the working directory to match the HEAD commit.
+        <br><br>
+        The modifications stashed away by this command can be listed with git stash list, inspected with git
+        stash show, and restored (potentially on top of a different commit) with git stash apply. Calling git
+        stash without any arguments is equivalent to git stash save. A stash is by default listed as "WIP on
+        branchname ...", but you can give a more descriptive message on the command line when you create one.
+        <br><br>
+        The latest stash you created is stored in refs/stash; older stashes are found in the reflog of this
+        reference and can be named using the usual reflog syntax (e.g. stash@{0} is the most recently created
+        stash, stash@{1} is the one before it, stash@{2.hours.ago} is also possible).
+        </p>
+        <p><b>OPTIONS</b></p>
+        <pre>
+   save [-p|--patch] [-k|--[no-]keep-index] [-u|--include-untracked] [-a|--all] [-q|--quiet] [&lt;message&gt;]
+       Save your local modifications to a new stash, and run git reset --hard to revert them. The
+       &lt;message&gt; part is optional and gives the description along with the stashed state. For quickly
+       making a snapshot, you can omit both "save" and &lt;message&gt;, but giving only &lt;message&gt; does not
+       trigger this action to prevent a misspelled subcommand from making an unwanted stash.
+
+       If the --keep-index option is used, all changes already added to the index are left intact.
+
+       If the --include-untracked option is used, all untracked files are also stashed and then cleaned
+       up with git clean, leaving the working directory in a very clean state. If the --all option is
+       used instead then the ignored files are stashed and cleaned in addition to the untracked files.
+
+       With --patch, you can interactively select hunks from the diff between HEAD and the working tree
+       to be stashed. The stash entry is constructed such that its index state is the same as the index
+       state of your repository, and its worktree contains only the changes you selected interactively.
+       The selected changes are then rolled back from your worktree. See the "Interactive Mode" section
+       of git-add(1) to learn how to operate the --patch mode.
+
+       The --patch option implies --keep-index. You can use --no-keep-index to override this.
+
+   list [&lt;options&gt;]
+       List the stashes that you currently have. Each stash is listed with its name (e.g.  stash@{0} is
+       the latest stash, stash@{1} is the one before, etc.), the name of the branch that was current
+       when the stash was made, and a short description of the commit the stash was based on.
+
+           stash@{0}: WIP on submit: 6ebd0e2... Update git-stash documentation
+           stash@{1}: On master: 9cc0589... Add git-stash
+
+       The command takes options applicable to the git log command to control what is shown and how. See
+       git-log(1).
+
+   show [&lt;stash&gt;]
+       Show the changes recorded in the stash as a diff between the stashed state and its original
+       parent. When no &lt;stash&gt; is given, shows the latest one. By default, the command shows the
+       diffstat, but it will accept any format known to git diff (e.g., git stash show -p stash@{1} to
+       view the second most recent stash in patch form).
+
+   pop [--index] [-q|--quiet] [&lt;stash&gt;]
+       Remove a single stashed state from the stash list and apply it on top of the current working tree
+       state, i.e., do the inverse operation of git stash save. The working directory must match the
+       index.
+
+       Applying the state can fail with conflicts; in this case, it is not removed from the stash list.
+       You need to resolve the conflicts by hand and call git stash drop manually afterwards.
+
+       If the --index option is used, then tries to reinstate not only the working tree's changes, but
+       also the index's ones. However, this can fail, when you have conflicts (which are stored in the
+       index, where you therefore can no longer apply the changes as they were originally).
+
+       When no &lt;stash&gt; is given, stash@{0} is assumed, otherwise &lt;stash&gt; must be a reference of the form
+       stash@{&lt;revision&gt;}.
+
+   apply [--index] [-q|--quiet] [&lt;stash&gt;]
+       Like pop, but do not remove the state from the stash list. Unlike pop, &lt;stash&gt; may be any commit
+       that looks like a commit created by stash save or stash create.
+
+   branch &lt;branchname&gt; [&lt;stash&gt;]
+       Creates and checks out a new branch named &lt;branchname&gt; starting from the commit at which the
+       &lt;stash&gt; was originally created, applies the changes recorded in &lt;stash&gt; to the new working tree
+       and index. If that succeeds, and &lt;stash&gt; is a reference of the form stash@{&lt;revision&gt;}, it then
+       drops the &lt;stash&gt;. When no &lt;stash&gt; is given, applies the latest one.
+
+       This is useful if the branch on which you ran git stash save has changed enough that git stash
+       apply fails due to conflicts. Since the stash is applied on top of the commit that was HEAD at
+       the time git stash was run, it restores the originally stashed state with no conflicts.
+
+   clear
+       Remove all the stashed states. Note that those states will then be subject to pruning, and may be
+       impossible to recover (see Examples below for a possible strategy).
+
+   drop [-q|--quiet] [&lt;stash&gt;]
+       Remove a single stashed state from the stash list. When no &lt;stash&gt; is given, it removes the
+       latest one. i.e.  stash@{0}, otherwise &lt;stash&gt; must be a valid stash log reference of the form
+       stash@{&lt;revision&gt;}.
+
+   create
+       Create a stash (which is a regular commit object) and return its object name, without storing it
+       anywhere in the ref namespace. This is intended to be useful for scripts. It is probably not the
+       command you want to use; see "save" above.
+
+   store
+       Store a given stash created via git stash create (which is a dangling merge commit) in the stash
+       ref, updating the stash reflog. This is intended to be useful for scripts. It is probably not the
+       command you want to use; see "save" above.
+        </pre>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingReset">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseReset" aria-expanded="false" aria-controls="collapseReset">
+          git-reset
+        </a>
+      </h4>
+    </div>
+    <div id="collapseReset" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingReset">
+      <div class="panel-body">
+        <h5>Reset current HEAD to the specified state.</h5>
+        <p><b>USAGE</b></p>
+        <pre>
+git reset [-q] [&lt;tree-ish&gt;] [--] &lt;paths&gt;...
+git reset (--patch | -p) [&lt;tree-ish&gt;] [--] [&lt;paths&gt;...]
+git reset [--soft | --mixed [-N] | --hard | --merge | --keep] [-q] [&lt;commit&gt;]
+        </pre>
+        <p><b>DESCRIPTION</b></p>
+        <p>
+        In the first and second form, copy entries from &lt;tree-ish&gt; to the index. In the third form, set the
+        current branch head (HEAD) to &lt;commit&gt;, optionally modifying index and working tree to match. The
+        &lt;tree-ish&gt;/&lt;commit&gt; defaults to HEAD in all forms.
+        <br><br>
+        If you want to undo a commit other than the latest on a branch, git-revert(1) is your friend.
+        </p>
+        <p><b>OPTIONS</b></p>
+        <pre>
+   -q, --quiet
+       Be quiet, only report errors.
+		</pre>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingRm">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseRm" aria-expanded="false" aria-controls="collapseRm">
+          git-rm
+        </a>
+      </h4>
+    </div>
+    <div id="collapseRm" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingRm">
+      <div class="panel-body">
+        <h5>Remove files from the working tree and from the index.</h5>
+        <p><b>USAGE</b></p>
+        <pre>
+git rm [-f | --force] [-n] [-r] [--cached] [--ignore-unmatch] [--quiet] [--] &lt;file&gt;...
+        </pre>
+        <p><b>DESCRIPTION</b></p>
+        <p>
+        Remove files from the index, or from the working tree and the index. git rm will not remove a file
+        from just your working directory. (There is no option to remove a file only from the working tree and
+        yet keep it in the index; use /bin/rm if you want to do that.) The files being removed have to be
+        identical to the tip of the branch, and no updates to their contents can be staged in the index,
+        though that default behavior can be overridden with the -f option. When --cached is given, the staged
+        content has to match either the tip of the branch or the file on disk, allowing the file to be
+        removed from just the index.
+        </p>
+        <p><b>OPTIONS</b></p>
+        <pre>
+   &lt;file&gt;...
+       Files to remove. Fileglobs (e.g.  *.c) can be given to remove all matching files. If you want Git
+       to expand file glob characters, you may need to shell-escape them. A leading directory name (e.g.
+       dir to remove dir/file1 and dir/file2) can be given to remove all files in the directory, and
+       recursively all sub-directories, but this requires the -r option to be explicitly given.
+
+   -f, --force
+       Override the up-to-date check.
+
+   -n, --dry-run
+       Don't actually remove any file(s). Instead, just show if they exist in the index and would
+       otherwise be removed by the command.
+
+   -r
+       Allow recursive removal when a leading directory name is given.
+
+   --
+       This option can be used to separate command-line options from the list of files, (useful when
+       filenames might be mistaken for command-line options).
+
+   --cached
+       Use this option to unstage and remove paths only from the index. Working tree files, whether
+       modified or not, will be left alone.
+
+   --ignore-unmatch
+       Exit with a zero status even if no files matched.
+
+   -q, --quiet
+       git rm normally outputs one line (in the form of an rm command) for each file removed. This
+       option suppresses that output.
+        </pre>
+      </div>
+    </div>
+  </div>
+</div>
