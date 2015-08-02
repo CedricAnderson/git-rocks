@@ -1,0 +1,503 @@
+---
+layout: tutorial
+title: Working with branches - Git Rocks
+headline: Working with branches in Git
+excerpt: Learn how to use branches in Git with this tutorial
+tutorial: branches
+next: forks
+---
+
+<hr>
+<h3>New Git commands used in this tutorial</h3>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingBranch">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseBranch" aria-expanded="true" aria-controls="collapseBranch">
+          git-branch
+        </a>
+      </h4>
+    </div>
+    <div id="collapseBranch" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingBranch">
+      <div class="panel-body">
+        <h5>List, create, or delete branches.</h5>
+        <p><b>USAGE</b></p>
+        <pre>
+git branch [--color[=&lt;when&gt;] | --no-color] [-r | -a]
+           [--list] [-v [--abbrev=&lt;length&gt; | --no-abbrev]]
+           [--column[=&lt;options&gt;] | --no-column]
+           [(--merged | --no-merged | --contains) [&lt;commit&gt;]] [&lt;pattern&gt;...]
+git branch [--set-upstream | --track | --no-track] [-l] [-f] &lt;branchname&gt; [&lt;start-point&gt;]
+git branch (--set-upstream-to=&lt;upstream&gt; | -u &lt;upstream&gt;) [&lt;branchname&gt;]
+git branch --unset-upstream [&lt;branchname&gt;]
+git branch (-m | -M) [&lt;oldbranch&gt;] &lt;newbranch&gt;
+git branch (-d | -D) [-r] &lt;branchname&gt;...
+git branch --edit-description [&lt;branchname&gt;]
+        </pre>
+        <p><b>DESCRIPTION</b></p>
+        <p>
+        If --list is given, or if there are no non-option arguments, existing branches are listed; the current
+        branch will be highlighted with an asterisk. Option -r causes the remote-tracking branches to be
+        listed, and option -a shows both local and remote branches. If a &lt;pattern&gt; is given, it is used as a
+        shell wildcard to restrict the output to matching branches. If multiple patterns are given, a branch is
+        shown if it matches any of the patterns. Note that when providing a &lt;pattern&gt;, you must use --list;
+        otherwise the command is interpreted as branch creation.
+        <br><br>
+        With --contains, shows only the branches that contain the named commit (in other words, the branches
+        whose tip commits are descendants of the named commit). With --merged, only branches merged into the
+        named commit (i.e. the branches whose tip commits are reachable from the named commit) will be listed.
+        With --no-merged only branches not merged into the named commit will be listed. If the &lt;commit&gt;
+        argument is missing it defaults to HEAD (i.e. the tip of the current branch).
+        <br><br>
+        The command's second form creates a new branch head named &lt;branchname&gt; which points to the current
+        HEAD, or &lt;start-point&gt; if given.
+        <br><br>
+        Note that this will create the new branch, but it will not switch the working tree to it; use "git
+        checkout &lt;newbranch&gt;" to switch to the new branch.
+        <br><br>
+        When a local branch is started off a remote-tracking branch, Git sets up the branch (specifically the
+        branch.&lt;name&gt;.remote and branch.&lt;name&gt;.merge configuration entries) so that git pull will appropriately
+        merge from the remote-tracking branch. This behavior may be changed via the global
+        branch.autosetupmerge configuration flag. That setting can be overridden by using the --track and
+        --no-track options, and changed later using git branch --set-upstream-to.
+        <br><br>
+        With a -m or -M option, &lt;oldbranch&gt; will be renamed to &lt;newbranch&gt;. If &lt;oldbranch&gt; had a corresponding
+        reflog, it is renamed to match &lt;newbranch&gt;, and a reflog entry is created to remember the branch
+        renaming. If &lt;newbranch&gt; exists, -M must be used to force the rename to happen.
+        <br><br>
+        With a -d or -D option, &lt;branchname&gt; will be deleted. You may specify more than one branch for
+        deletion. If the branch currently has a reflog then the reflog will also be deleted.
+        <br><br>
+        Use -r together with -d to delete remote-tracking branches. Note, that it only makes sense to delete
+        remote-tracking branches if they no longer exist in the remote repository or if git fetch was
+        configured not to fetch them again. See also the prune subcommand of git-remote(1) for a way to clean
+        up all obsolete remote-tracking branches.
+        </p>
+        <p><b>OPTIONS</b></p>
+        <pre>
+   -d, --delete
+       Delete a branch. The branch must be fully merged in its upstream branch, or in HEAD if no upstream
+       was set with --track or --set-upstream.
+
+   -D
+       Delete a branch irrespective of its merged status.
+
+   -l, --create-reflog
+       Create the branch's reflog. This activates recording of all changes made to the branch ref,
+       enabling use of date based sha1 expressions such as "&lt;branchname&gt;@{yesterday}". Note that in
+       non-bare repositories, reflogs are usually enabled by default by the core.logallrefupdates config
+       option.
+
+   -f, --force
+       Reset &lt;branchname&gt; to &lt;startpoint&gt; if &lt;branchname&gt; exists already. Without -fgit branch refuses to
+       change an existing branch.
+
+   -m, --move
+       Move/rename a branch and the corresponding reflog.
+
+   -M
+       Move/rename a branch even if the new branch name already exists.
+
+   --color[=&lt;when&gt;]
+       Color branches to highlight current, local, and remote-tracking branches. The value must be always
+       (the default), never, or auto.
+
+   --no-color
+       Turn off branch colors, even when the configuration file gives the default to color output. Same as
+       --color=never.
+
+   --column[=&lt;options&gt;], --no-column
+       Display branch listing in columns. See configuration variable column.branch for option
+       syntax.--column and --no-column without options are equivalent to always and never respectively.
+
+       This option is only applicable in non-verbose mode.
+
+   -r, --remotes
+       List or delete (if used with -d) the remote-tracking branches.
+
+   -a, --all
+       List both remote-tracking branches and local branches.
+
+   --list
+       Activate the list mode.  git branch &lt;pattern&gt; would try to create a branch, use git branch --list
+       &lt;pattern&gt; to list matching branches.
+
+   -v, -vv, --verbose
+       When in list mode, show sha1 and commit subject line for each head, along with relationship to
+       upstream branch (if any). If given twice, print the name of the upstream branch, as well (see also
+       git remote show &lt;remote&gt;).
+
+   -q, --quiet
+       Be more quiet when creating or deleting a branch, suppressing non-error messages.
+
+   --abbrev=&lt;length&gt;
+       Alter the sha1's minimum display length in the output listing. The default value is 7 and can be
+       overridden by the core.abbrev config option.
+
+   --no-abbrev
+       Display the full sha1s in the output listing rather than abbreviating them.
+
+   -t, --track
+       When creating a new branch, set up branch.&lt;name&gt;.remote and branch.&lt;name&gt;.merge configuration
+       entries to mark the start-point branch as "upstream" from the new branch. This configuration will
+       tell git to show the relationship between the two branches in git status and git branch -v.
+       Furthermore, it directs git pull without arguments to pull from the upstream when the new branch is
+       checked out.
+
+       This behavior is the default when the start point is a remote-tracking branch. Set the
+       branch.autosetupmerge configuration variable to false if you want git checkout and git branch to
+       always behave as if --no-track were given. Set it to always if you want this behavior when the
+       start-point is either a local or remote-tracking branch.
+
+   --no-track
+       Do not set up "upstream" configuration, even if the branch.autosetupmerge configuration variable is
+       true.
+
+   --set-upstream
+       If specified branch does not exist yet or if --force has been given, acts exactly like --track.
+       Otherwise sets up configuration like --track would when creating the branch, except that where
+       branch points to is not changed.
+
+   -u &lt;upstream&gt;, --set-upstream-to=&lt;upstream&gt;
+       Set up &lt;branchname&gt;'s tracking information so &lt;upstream&gt; is considered &lt;branchname&gt;'s upstream
+       branch. If no &lt;branchname&gt; is specified, then it defaults to the current branch.
+
+   --unset-upstream
+       Remove the upstream information for &lt;branchname&gt;. If no branch is specified it defaults to the
+       current branch.
+
+   --edit-description
+       Open an editor and edit the text to explain what the branch is for, to be used by various other
+       commands (e.g.  request-pull).
+
+   --contains [&lt;commit&gt;]
+       Only list branches which contain the specified commit (HEAD if not specified). Implies --list.
+
+   --merged [&lt;commit&gt;]
+       Only list branches whose tips are reachable from the specified commit (HEAD if not specified).
+       Implies --list.
+
+   --no-merged [&lt;commit&gt;]
+       Only list branches whose tips are not reachable from the specified commit (HEAD if not specified).
+       Implies --list.
+
+   &lt;branchname&gt;
+       The name of the branch to create or delete. The new branch name must pass all checks defined by
+       git-check-ref-format(1). Some of these checks may restrict the characters allowed in a branch name.
+
+   &lt;start-point&gt;
+       The new branch head will point to this commit. It may be given as a branch name, a commit-id, or a
+       tag. If this option is omitted, the current HEAD will be used instead.
+
+   &lt;oldbranch&gt;
+       The name of an existing branch to rename.
+
+   &lt;newbranch&gt;
+       The new name for an existing branch. The same restrictions as for &lt;branchname&gt; apply.
+        </pre>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingCheckout">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseCheckout" aria-expanded="false" aria-controls="collapseCheckout">
+          git-checkout
+        </a>
+      </h4>
+    </div>
+    <div id="collapseCheckout" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingCheckout">
+      <div class="panel-body">
+        <h5>Checkout a branch or paths to the working tree.</h5>
+        <p><b>USAGE</b></p>
+        <pre>
+git checkout [-q] [-f] [-m] [&lt;branch&gt;]
+git checkout [-q] [-f] [-m] --detach [&lt;branch&gt;]
+git checkout [-q] [-f] [-m] [--detach] &lt;commit&gt;
+git checkout [-q] [-f] [-m] [[-b|-B|--orphan] &lt;new_branch&gt;] [&lt;start_point&gt;]
+git checkout [-f|--ours|--theirs|-m|--conflict=&lt;style&gt;] [&lt;tree-ish&gt;] [--] &lt;paths&gt;...
+git checkout [-p|--patch] [&lt;tree-ish&gt;] [--] [&lt;paths&gt;...]
+        </pre>
+        <p><b>DESCRIPTION</b></p>
+        <p>
+        Updates files in the working tree to match the version in the index or the specified tree. If no paths
+        are given, git checkout will also update HEAD to set the specified branch as the current branch.
+        </p>
+        <p><b>OPTIONS</b></p>
+        <pre>
+   -q, --quiet
+       Quiet, suppress feedback messages.
+
+   -f, --force
+       When switching branches, proceed even if the index or the working tree differs from HEAD. This is
+       used to throw away local changes.
+
+       When checking out paths from the index, do not fail upon unmerged entries; instead, unmerged
+       entries are ignored.
+
+   --ours, --theirs
+       When checking out paths from the index, check out stage #2 (ours) or #3 (theirs) for unmerged
+       paths.
+
+   -b &lt;new_branch&gt;
+       Create a new branch named &lt;new_branch&gt; and start it at &lt;start_point&gt;; see git-branch(1) for
+       details.
+
+   -B &lt;new_branch&gt;
+       Creates the branch &lt;new_branch&gt; and start it at &lt;start_point&gt;; if it already exists, then reset it
+       to &lt;start_point&gt;. This is equivalent to running "git branch" with "-f"; see git-branch(1) for
+       details.
+
+   -t, --track
+       When creating a new branch, set up "upstream" configuration. See "--track" in git-branch(1) for
+       details.
+
+       If no -b option is given, the name of the new branch will be derived from the remote-tracking
+       branch, by looking at the local part of the refspec configured for the corresponding remote, and
+       then stripping the initial part up to the "*". This would tell us to use "hack" as the local branch
+       when branching off of "origin/hack" (or "remotes/origin/hack", or even "refs/remotes/origin/hack").
+       If the given name has no slash, or the above guessing results in an empty name, the guessing is
+       aborted. You can explicitly give a name with -b in such a case.
+
+   --no-track
+       Do not set up "upstream" configuration, even if the branch.autosetupmerge configuration variable is
+       true.
+
+   -l
+       Create the new branch's reflog; see git-branch(1) for details.
+
+   --detach
+       Rather than checking out a branch to work on it, check out a commit for inspection and discardable
+       experiments. This is the default behavior of "git checkout &lt;commit&gt;" when &lt;commit&gt; is not a branch
+       name. See the "DETACHED HEAD" section below for details.
+
+   --orphan &lt;new_branch&gt;
+       Create a new orphan branch, named &lt;new_branch&gt;, started from &lt;start_point&gt; and switch to it. The
+       first commit made on this new branch will have no parents and it will be the root of a new history
+       totally disconnected from all the other branches and commits.
+
+       The index and the working tree are adjusted as if you had previously run "git checkout
+       &lt;start_point&gt;". This allows you to start a new history that records a set of paths similar to
+       &lt;start_point&gt; by easily running "git commit -a" to make the root commit.
+
+       This can be useful when you want to publish the tree from a commit without exposing its full
+       history. You might want to do this to publish an open source branch of a project whose current tree
+       is "clean", but whose full history contains proprietary or otherwise encumbered bits of code.
+
+       If you want to start a disconnected history that records a set of paths that is totally different
+       from the one of &lt;start_point&gt;, then you should clear the index and the working tree right after
+       creating the orphan branch by running "git rm -rf ." from the top level of the working tree.
+       Afterwards you will be ready to prepare your new files, repopulating the working tree, by copying
+       them from elsewhere, extracting a tarball, etc.
+
+   --ignore-skip-worktree-bits
+       In sparse checkout mode, git checkout -- &lt;paths&gt; would update only entries matched by &lt;paths&gt; and
+       sparse patterns in $GIT_DIR/info/sparse-checkout. This option ignores the sparse patterns and adds
+       back any files in &lt;paths&gt;.
+
+   -m, --merge
+       When switching branches, if you have local modifications to one or more files that are different
+       between the current branch and the branch to which you are switching, the command refuses to switch
+       branches in order to preserve your modifications in context. However, with this option, a three-way
+       merge between the current branch, your working tree contents, and the new branch is done, and you
+       will be on the new branch.
+
+       When a merge conflict happens, the index entries for conflicting paths are left unmerged, and you
+       need to resolve the conflicts and mark the resolved paths with git add (or git rm if the merge
+       should result in deletion of the path).
+
+       When checking out paths from the index, this option lets you recreate the conflicted merge in the
+       specified paths.
+
+   --conflict=&lt;style&gt;
+       The same as --merge option above, but changes the way the conflicting hunks are presented,
+       overriding the merge.conflictstyle configuration variable. Possible values are "merge" (default)
+       and "diff3" (in addition to what is shown by "merge" style, shows the original contents).
+
+   -p, --patch
+       Interactively select hunks in the difference between the &lt;tree-ish&gt; (or the index, if unspecified)
+       and the working tree. The chosen hunks are then applied in reverse to the working tree (and if a
+       &lt;tree-ish&gt; was specified, the index).
+
+       This means that you can use git checkout -p to selectively discard edits from your current working
+       tree. See the "Interactive Mode" section of git-add(1) to learn how to operate the --patch mode.
+
+   &lt;branch&gt;
+       Branch to checkout; if it refers to a branch (i.e., a name that, when prepended with "refs/heads/",
+       is a valid ref), then that branch is checked out. Otherwise, if it refers to a valid commit, your
+       HEAD becomes "detached" and you are no longer on any branch (see below for details).
+
+       As a special case, the "@{-N}" syntax for the N-th last branch/commit checks out branches (instead
+       of detaching). You may also specify - which is synonymous with "@{-1}".
+
+       As a further special case, you may use "A...B" as a shortcut for the merge base of A and B if there
+       is exactly one merge base. You can leave out at most one of A and B, in which case it defaults to
+       HEAD.
+
+   &lt;new_branch&gt;
+       Name for the new branch.
+
+   &lt;start_point&gt;
+       The name of a commit at which to start the new branch; see git-branch(1) for details. Defaults to
+       HEAD.
+
+   &lt;tree-ish&gt;
+       Tree to checkout from (when paths are given). If not specified, the index will be used.
+		</pre>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingMerge">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseMerge" aria-expanded="false" aria-controls="collapseMerge">
+          git-merge
+        </a>
+      </h4>
+    </div>
+    <div id="collapseMerge" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingMerge">
+      <div class="panel-body">
+        <h5>Join two or more development histories together.</h5>
+        <p><b>USAGE</b></p>
+        <pre>
+git merge [-n] [--stat] [--no-commit] [--squash] [--[no-]edit]
+          [-s &lt;strategy&gt;] [-X &lt;strategy-option&gt;] [-S[&lt;key-id&gt;]]
+          [--[no-]rerere-autoupdate] [-m &lt;msg&gt;] [&lt;commit&gt;...]
+git merge &lt;msg&gt; HEAD &lt;commit&gt;...
+git merge --abort
+        </pre>
+        <p><b>DESCRIPTION</b></p>
+        <p>
+        Incorporates changes from the named commits (since the time their histories diverged from the current
+        branch) into the current branch. This command is used by git pull to incorporate changes from another
+        repository and can be used by hand to merge changes from one branch into another.
+        <br><br>
+        The second syntax (&lt;msg&gt; HEAD &lt;commit&gt;...) is supported for historical reasons. Do not use it from the
+        command line or in new scripts. It is the same as git merge -m &lt;msg&gt; &lt;commit&gt;....
+        <br><br>
+        The third syntax ("git merge --abort") can only be run after the merge has resulted in conflicts. git
+        merge --abort will abort the merge process and try to reconstruct the pre-merge state. However, if
+        there were uncommitted changes when the merge started (and especially if those changes were further
+        modified after the merge was started), git merge --abort will in some cases be unable to reconstruct
+        the original (pre-merge) changes. Therefore:
+        <br><br>
+        Warning: Running git merge with non-trivial uncommitted changes is discouraged: while possible, it may
+        leave you in a state that is hard to back out of in the case of a conflict.
+        </p>
+        <p><b>OPTIONS</b></p>
+        <pre>
+   --commit, --no-commit
+       Perform the merge and commit the result. This option can be used to override --no-commit.
+
+       With --no-commit perform the merge but pretend the merge failed and do not autocommit, to give the
+       user a chance to inspect and further tweak the merge result before committing.
+
+   --edit, -e, --no-edit
+       Invoke an editor before committing successful mechanical merge to further edit the auto-generated
+       merge message, so that the user can explain and justify the merge. The --no-edit option can be used
+       to accept the auto-generated message (this is generally discouraged). The --edit (or -e) option is
+       still useful if you are giving a draft message with the -m option from the command line and want to
+       edit it in the editor.
+
+       Older scripts may depend on the historical behaviour of not allowing the user to edit the merge log
+       message. They will see an editor opened when they run git merge. To make it easier to adjust such
+       scripts to the updated behaviour, the environment variable GIT_MERGE_AUTOEDIT can be set to no at
+       the beginning of them.
+
+   --ff
+       When the merge resolves as a fast-forward, only update the branch pointer, without creating a merge
+       commit. This is the default behavior.
+
+   --no-ff
+       Create a merge commit even when the merge resolves as a fast-forward. This is the default behaviour
+       when merging an annotated (and possibly signed) tag.
+
+   --ff-only
+       Refuse to merge and exit with a non-zero status unless the current HEAD is already up-to-date or
+       the merge can be resolved as a fast-forward.
+
+   --log[=&lt;n&gt;], --no-log
+       In addition to branch names, populate the log message with one-line descriptions from at most &lt;n&gt;
+       actual commits that are being merged. See also git-fmt-merge-msg(1).
+
+       With --no-log do not list one-line descriptions from the actual commits being merged.
+
+   --stat, -n, --no-stat
+       Show a diffstat at the end of the merge. The diffstat is also controlled by the configuration
+       option merge.stat.
+
+       With -n or --no-stat do not show a diffstat at the end of the merge.
+
+   --squash, --no-squash
+       Produce the working tree and index state as if a real merge happened (except for the merge
+       information), but do not actually make a commit, move the HEAD, or record $GIT_DIR/MERGE_HEAD (to
+       cause the next git commit command to create a merge commit). This allows you to create a single
+       commit on top of the current branch whose effect is the same as merging another branch (or more in
+       case of an octopus).
+
+       With --no-squash perform the merge and commit the result. This option can be used to override
+       --squash.
+
+   -s &lt;strategy&gt;, --strategy=&lt;strategy&gt;
+       Use the given merge strategy; can be supplied more than once to specify them in the order they
+       should be tried. If there is no -s option, a built-in list of strategies is used instead (git
+       merge-recursive when merging a single head, git merge-octopus otherwise).
+
+   -X &lt;option&gt;, --strategy-option=&lt;option&gt;
+       Pass merge strategy specific option through to the merge strategy.
+
+   --verify-signatures, --no-verify-signatures
+       Verify that the commits being merged have good and trusted GPG signatures and abort the merge in
+       case they do not.
+
+   --summary, --no-summary
+       Synonyms to --stat and --no-stat; these are deprecated and will be removed in the future.
+
+   -q, --quiet
+       Operate quietly. Implies --no-progress.
+
+   -v, --verbose
+       Be verbose.
+
+   --progress, --no-progress
+       Turn progress on/off explicitly. If neither is specified, progress is shown if standard error is
+       connected to a terminal. Note that not all merge strategies may support progress reporting.
+
+   -S[&lt;keyid&gt;], --gpg-sign[=&lt;keyid&gt;]
+       GPG-sign the resulting merge commit.
+
+   -m &lt;msg&gt;
+       Set the commit message to be used for the merge commit (in case one is created).
+
+       If --log is specified, a shortlog of the commits being merged will be appended to the specified
+       message.
+
+       The git fmt-merge-msg command can be used to give a good default for automated git merge
+       invocations.
+
+   --[no-]rerere-autoupdate
+       Allow the rerere mechanism to update the index with the result of auto-conflict resolution if
+       possible.
+
+   --abort
+       Abort the current conflict resolution process, and try to reconstruct the pre-merge state.
+
+       If there were uncommitted worktree changes present when the merge started, git merge --abort will
+       in some cases be unable to reconstruct these changes. It is therefore recommended to always commit
+       or stash your changes before running git merge.
+
+       git merge --abort is equivalent to git reset --merge when MERGE_HEAD is present.
+
+   &lt;commit&gt;...
+       Commits, usually other branch heads, to merge into our branch. Specifying more than one commit will
+       create a merge with more than two parents (affectionately called an Octopus merge).
+
+       If no commit is given from the command line, merge the remote-tracking branches that the current
+       branch is configured to use as its upstream. See also the configuration section of this manual
+       page.
+        </pre>
+      </div>
+    </div>
+  </div>
+</div>
