@@ -1,4 +1,4 @@
-# Git Rocks - Interactive tutorials to learn Git.
+# Git Rocks - Interactive tutorials to learn Git
 
 ## Basics
 
