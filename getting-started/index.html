@@ -12,14 +12,201 @@ next: basics
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
   <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingConfig">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseConfig" aria-expanded="true" aria-controls="collapseConfig">
+          git-config
+        </a>
+      </h4>
+    </div>
+    <div id="collapseConfig" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingConfig">
+      <div class="panel-body">
+        <h5>Get and set repository or global options.</h5>
+        <p><b>USAGE</b></p>
+        <pre>
+git config [&lt;file-option&gt;] [type] [-z|--null] name [value [value_regex]]
+git config [&lt;file-option&gt;] [type] --add name value
+git config [&lt;file-option&gt;] [type] --replace-all name value [value_regex]
+git config [&lt;file-option&gt;] [type] [-z|--null] --get name [value_regex]
+git config [&lt;file-option&gt;] [type] [-z|--null] --get-all name [value_regex]
+git config [&lt;file-option&gt;] [type] [-z|--null] --get-regexp name_regex [value_regex]
+git config [&lt;file-option&gt;] [type] [-z|--null] --get-urlmatch name URL
+git config [&lt;file-option&gt;] --unset name [value_regex]
+git config [&lt;file-option&gt;] --unset-all name [value_regex]
+git config [&lt;file-option&gt;] --rename-section old_name new_name
+git config [&lt;file-option&gt;] --remove-section name
+git config [&lt;file-option&gt;] [-z|--null] -l | --list
+git config [&lt;file-option&gt;] --get-color name [default]
+git config [&lt;file-option&gt;] --get-colorbool name [stdout-is-tty]
+git config [&lt;file-option&gt;] -e | --edit
+        </pre>
+        <p><b>DESCRIPTION</b></p>
+        <p>
+        You can query/set/replace/unset options with this command. The name is actually the section and the
+        key separated by a dot, and the value will be escaped.
+        <br><br>
+        Multiple lines can be added to an option by using the --add option. If you want to update or unset
+        an option which can occur on multiple lines, a POSIX regexp value_regex needs to be given. Only the
+        existing values that match the regexp are updated or unset. If you want to handle the lines that do
+        not match the regex, just prepend a single exclamation mark in front (see also the section called
+        "EXAMPLES").
+        <br><br>
+        The type specifier can be either --int or --bool, to make git config ensure that the variable(s) are
+        of the given type and convert the value to the canonical form (simple decimal number for int, a
+        "true" or "false" string for bool), or --path, which does some path expansion (see --path below). If
+        no type specifier is passed, no checks or transformations are performed on the value.
+        <br><br>
+        When reading, the values are read from the system, global and repository local configuration files
+        by default, and options --system, --global, --local and --file &lt;filename&gt; can be used to tell the
+        command to read from only that location (see the section called "FILES").
+        <br><br>
+        When writing, the new value is written to the repository local configuration file by default, and
+        options --system, --global, --file &lt;filename&gt; can be used to tell the command to write to that
+        location (you can say --local but that is the default).
+        <br><br>
+        This command will fail with non-zero status upon error. Some exit codes are:
+        <ol>
+        <li>The config file is invalid (ret=3),</li>
+        <li>can not write to the config file (ret=4),</li>
+        <li>no section or name was provided (ret=2),</li>
+        <li>the section or key is invalid (ret=1),</li>
+        <li>you try to unset an option which does not exist (ret=5),</li>
+        <li>you try to unset/set an option for which multiple lines match (ret=5), or</li>
+        <li>you try to use an invalid regexp (ret=6).</li>
+        </ol>
+        On success, the command returns the exit code 0.
+        </p>
+        <p><b>OPTIONS</b></p>
+        <pre>
+   --replace-all
+       Default behavior is to replace at most one line. This replaces all lines matching the key (and
+       optionally the value_regex).
+
+   --add
+       Adds a new line to the option without altering any existing values. This is the same as
+       providing ^$ as the value_regex in --replace-all.
+
+   --get
+       Get the value for a given key (optionally filtered by a regex matching the value). Returns error
+       code 1 if the key was not found and the last value if multiple key values were found.
+
+   --get-all
+       Like get, but does not fail if the number of values for the key is not exactly one.
+
+   --get-regexp
+       Like --get-all, but interprets the name as a regular expression and writes out the key names.
+       Regular expression matching is currently case-sensitive and done against a canonicalized version
+       of the key in which section and variable names are lowercased, but subsection names are not.
+
+   --get-urlmatch name URL
+       When given a two-part name section.key, the value for section.&lt;url&gt;.key whose &lt;url&gt; part matches
+       the best to the given URL is returned (if no such key exists, the value for section.key is used
+       as a fallback). When given just the section as name, do so for all the keys in the section and
+       list them.
+
+   --global
+       For writing options: write to global ~/.gitconfig file rather than the repository .git/config,
+       write to $XDG_CONFIG_HOME/git/config file if this file exists and the ~/.gitconfig file doesn't.
+
+       For reading options: read only from global ~/.gitconfig and from $XDG_CONFIG_HOME/git/config
+       rather than from all available files.
+
+       See also the section called "FILES".
+
+   --system
+       For writing options: write to system-wide $(prefix)/etc/gitconfig rather than the repository
+       .git/config.
+
+       For reading options: read only from system-wide $(prefix)/etc/gitconfig rather than from all
+       available files.
+
+       See also the section called "FILES".
+
+   --local
+       For writing options: write to the repository .git/config file. This is the default behavior.
+
+       For reading options: read only from the repository .git/config rather than from all available
+       files.
+
+       See also the section called "FILES".
+
+   -f config-file, --file config-file
+       Use the given config file instead of the one specified by GIT_CONFIG.
+
+   --blob blob
+       Similar to --file but use the given blob instead of a file. E.g. you can use master:.gitmodules
+       to read values from the file .gitmodules in the master branch. See "SPECIFYING REVISIONS"
+       section in gitrevisions(7) for a more complete list of ways to spell blob names.
+
+   --remove-section
+       Remove the given section from the configuration file.
+
+   --rename-section
+       Rename the given section to a new name.
+
+   --unset
+       Remove the line matching the key from config file.
+
+   --unset-all
+       Remove all lines matching the key from config file.
+
+   -l, --list
+       List all variables set in config file.
+
+   --bool
+       git config will ensure that the output is "true" or "false"
+
+   --int
+       git config will ensure that the output is a simple decimal number. An optional value suffix of
+       k, m, or g in the config file will cause the value to be multiplied by 1024, 1048576, or
+       1073741824 prior to output.
+
+   --bool-or-int
+       git config will ensure that the output matches the format of either --bool or --int, as
+       described above.
+
+   --path
+       git-config will expand leading ~ to the value of $HOME, and ~user to the home directory for the
+       specified user. This option has no effect when setting the value (but you can use git config bla
+       ~/ from the command line to let your shell do the expansion).
+
+   -z, --null
+       For all options that output values and/or keys, always end values with the null character
+       (instead of a newline). Use newline instead as a delimiter between key and value. This allows
+       for secure parsing of the output without getting confused e.g. by values that contain line
+       breaks.
+
+   --get-colorbool name [stdout-is-tty]
+       Find the color setting for name (e.g.  color.diff) and output "true" or "false".  stdout-is-tty
+       should be either "true" or "false", and is taken into account when configuration says "auto". If
+       stdout-is-tty is missing, then checks the standard output of the command itself, and exits with
+       status 0 if color is to be used, or exits with status 1 otherwise. When the color setting for
+       name is undefined, the command uses color.ui as fallback.
+
+   --get-color name [default]
+       Find the color configured for name (e.g.  color.diff.new) and output it as the ANSI color escape
+       sequence to the standard output. The optional default parameter is used instead, if there is no
+       color configured for name.
+
+   -e, --edit
+       Opens an editor to modify the specified config file; either --system, --global, or repository
+       (default).
+
+   --[no-]includes
+       Respect include.*  directives in config files when looking up values. Defaults to on.
+        </pre>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="headingInit">
       <h4 class="panel-title">
-        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseInit" aria-expanded="true" aria-controls="collapseInit">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseInit" aria-expanded="true" aria-controls="collapseInit">
           git-init
         </a>
       </h4>
     </div>
-    <div id="collapseInit" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingInit">
+    <div id="collapseInit" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingInit">
       <div class="panel-body">
         <h5>Create an empty Git repository or reinitialize an existing one.</h5>
         <p><b>USAGE</b></p>

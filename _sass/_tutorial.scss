@@ -2,3 +2,21 @@
 	margin-top:20px;
 	text-align:center;
 }
+
+.tutorial-header {
+	background-color: #999;
+	margin-bottom: 15px;
+
+	h1 {
+		color: #fff;
+		margin-bottom: 0;
+	}
+
+	h2 {
+		margin-top: 0;
+
+		small {
+			color: #ddd;
+		}
+	}
+}

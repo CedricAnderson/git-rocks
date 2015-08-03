@@ -1,9 +1,23 @@
 var gitRocks = {
     currentTutorial: "gettingStarted",
     currentStep: 0,
-    nbSteps: 8,
+    nbSteps: 10,
     gettingStarted: {
         step0: {
+            intro: 'Let\'s configure your Git. First setup your name.',
+            command: 'git config --global user.name "Vincent L"',
+            output: [
+            ],
+            success: 'You just setup your name.'
+        },
+        step1: {
+            intro: 'Now let\'s setup your email.',
+            command: 'git config --global user.email "vincent@git.rocks"',
+            output: [
+            ],
+            success: 'Your email is now setup in Git.'
+        },
+        step2: {
             intro: 'Let\'s create your first repository.',
             command: 'git init',
             output: [
@@ -11,13 +25,13 @@ var gitRocks = {
             ],
             success: 'You just created your first repository.'
         },
-        step1: {
+        step3: {
             intro: 'Now let\'s add a file.',
             command: 'touch README.md',
             output: [],
             success: 'You created a README.md file.'
         },
-        step2: {
+        step4: {
             intro: 'Check the current status of your repository.',
             command: 'git status',
             output: [
@@ -34,13 +48,13 @@ var gitRocks = {
             ],
             success: 'We see that README.md is new and not part of your repository.'
         },
-        step3: {
+        step5: {
             intro: 'It\'s now time to add that file to be committed.',
             command: 'git add README.md',
             output: [],
             success: 'You just added README.md to be committed.'
         },
-        step4: {
+        step6: {
             intro: 'Check the status of your repository again.',
             command: 'git status',
             output: [
@@ -55,7 +69,7 @@ var gitRocks = {
             ],
             success: 'README.md is now ready to be committed.'
         },
-        step5: {
+        step7: {
             intro: 'Let\'s do an initial commit.',
             command: 'git commit -m "first commit"',
             output: [
@@ -65,14 +79,14 @@ var gitRocks = {
             ],
             success: 'You just made your first commit.'
         },
-        step6: {
+        step8: {
             intro: 'Before we can push to your remote repository, you need to add a new origin.',
             command: 'git remote add origin git@github.com:vlamanna/git-rocks-demo.git',
             output: [
             ],
             success: 'You are now ready to push your commit.'
         },
-        step7: {
+        step9: {
             intro: 'Push your commit to your remote repository.',
             command: 'git push origin master',
             output: [

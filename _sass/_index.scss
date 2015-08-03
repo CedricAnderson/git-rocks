@@ -1,3 +1,14 @@
+.index-provider {
+	background-color: #555;
+	margin-top:20px;
+	padding-bottom:10px;
+	color: #efefef;
+
+	a {
+		color: #fff;
+	}	
+}
+
 .provider-content {
 	text-align:center;
 }
@@ -9,10 +20,12 @@
 
 .img-github {
 	padding-top:17px;
+	padding-bottom:17px;
 }
 
 .img-bitbucket {
 	padding-top:78px;
+	padding-bottom:78px;
 }
 
 .book-content {
@@ -27,4 +40,20 @@
 
 .img-codecommit {
 	width:165px;
+}
+
+.jumbotron {
+	background: url("/assets/images/gitrocks.jpg") no-repeat center center fixed;
+	background-color: #eee;
+	background-size: cover;
+
+	h1 {
+		color: #fff;
+	}
+
+	h2 {
+		small {
+			color: #eee;
+		}
+	}
 }
