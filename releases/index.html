@@ -6,3 +6,239 @@ excerpt: Learn how you can better manage your releases with Git in this tutorial
 tutorial: releases
 next: rockstar
 ---
+
+<h3>New Git commands used in this tutorial</h3>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingTag">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTag" aria-expanded="true" aria-controls="collapseTag">
+          git-tag
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTag" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTag">
+      <div class="panel-body">
+        <h5>Create, list, delete or verify a tag object signed with GPG.</h5>
+        <p><b>USAGE</b></p>
+        <pre>
+git tag [-a | -s | -u &lt;key-id&gt;] [-f] [-m &lt;msg&gt; | -F &lt;file&gt;]
+        &lt;tagname&gt; [&lt;commit&gt; | &lt;object&gt;]
+git tag -d &lt;tagname&gt;...
+git tag [-n[&lt;num&gt;]] -l [--contains &lt;commit&gt;] [--points-at &lt;object&gt;]
+        [--column[=&lt;options&gt;] | --no-column] [&lt;pattern&gt;...]
+        [&lt;pattern&gt;...]
+git tag -v &lt;tagname&gt;...
+        </pre>
+        <p><b>DESCRIPTION</b></p>
+        <p>
+        Add a tag reference in refs/tags/, unless -d/-l/-v is given to delete, list or verify tags.
+        <br><br>
+        Unless -f is given, the named tag must not yet exist.
+        <br><br>
+        If one of -a, -s, or -u &lt;key-id&gt; is passed, the command creates a tag object, and requires a tag
+        message. Unless -m &lt;msg&gt; or -F &lt;file&gt; is given, an editor is started for the user to type in the tag
+        message.
+        <br><br>
+        If -m &lt;msg&gt; or -F &lt;file&gt; is given and -a, -s, and -u &lt;key-id&gt; are absent, -a is implied.
+        <br><br>
+        Otherwise just a tag reference for the SHA-1 object name of the commit object is created (i.e. a
+        lightweight tag).
+        <br><br>
+        A GnuPG signed tag object will be created when -s or -u &lt;key-id&gt; is used. When -u &lt;key-id&gt; is not
+        used, the committer identity for the current user is used to find the GnuPG key for signing. The
+        configuration variable gpg.program is used to specify custom GnuPG binary.
+        <br><br>
+        Tag objects (created with -a, -s, or -u) are called "annotated" tags; they contain a creation date,
+        the tagger name and e-mail, a tagging message, and an optional GnuPG signature. Whereas a
+        "lightweight" tag is simply a name for an object (usually a commit object).
+        <br><br>
+        Annotated tags are meant for release while lightweight tags are meant for private or temporary
+        object labels. For this reason, some git commands for naming objects (like git describe) will ignore
+        lightweight tags by default.
+        </p>
+        <p><b>OPTIONS</b></p>
+        <pre>
+   -a, --annotate
+       Make an unsigned, annotated tag object
+
+   -s, --sign
+       Make a GPG-signed tag, using the default e-mail address's key.
+
+   -u &lt;key-id&gt;, --local-user=&lt;key-id&gt;
+       Make a GPG-signed tag, using the given key.
+
+   -f, --force
+       Replace an existing tag with the given name (instead of failing)
+
+   -d, --delete
+       Delete existing tags with the given names.
+
+   -v, --verify
+       Verify the gpg signature of the given tag names.
+
+   -n&lt;num&gt;
+       &lt;num&gt; specifies how many lines from the annotation, if any, are printed when using -l. The
+       default is not to print any annotation lines. If no number is given to -n, only the first line
+       is printed. If the tag is not annotated, the commit message is displayed instead.
+
+   -l &lt;pattern&gt;, --list &lt;pattern&gt;
+       List tags with names that match the given pattern (or all if no pattern is given). Running "git
+       tag" without arguments also lists all tags. The pattern is a shell wildcard (i.e., matched using
+       fnmatch(3)). Multiple patterns may be given; if any of them matches, the tag is shown.
+
+   --sort=&lt;type&gt;
+       Sort in a specific order. Supported type is "refname" (lexicographic order), "version:refname"
+       or "v:refname" (tag names are treated as versions). Prepend "-" to reverse sort order. When this
+       option is not given, the sort order defaults to the value configured for the tag.sort variable
+       if it exists, or lexicographic order otherwise. See git-config(1).
+
+   --column[=&lt;options&gt;], --no-column
+       Display tag listing in columns. See configuration variable column.tag for option syntax.--column
+       and --no-column without options are equivalent to always and never respectively.
+
+       This option is only applicable when listing tags without annotation lines.
+
+   --contains [&lt;commit&gt;]
+       Only list tags which contain the specified commit (HEAD if not specified).
+
+   --points-at &lt;object&gt;
+       Only list tags of the given object.
+
+   -m &lt;msg&gt;, --message=&lt;msg&gt;
+       Use the given tag message (instead of prompting). If multiple -m options are given, their values
+       are concatenated as separate paragraphs. Implies -a if none of -a, -s, or -u &lt;key-id&gt; is given.
+
+   -F &lt;file&gt;, --file=&lt;file&gt;
+       Take the tag message from the given file. Use - to read the message from the standard input.
+       Implies -a if none of -a, -s, or -u &lt;key-id&gt; is given.
+
+   --cleanup=&lt;mode&gt;
+       This option sets how the tag message is cleaned up. The &lt;mode&gt; can be one of verbatim,
+       whitespace and strip. The strip mode is default. The verbatim mode does not change message at
+       all, whitespace removes just leading/trailing whitespace lines and strip removes both whitespace
+       and commentary.
+
+   &lt;tagname&gt;
+       The name of the tag to create, delete, or describe. The new tag name must pass all checks
+       defined by git-check-ref-format(1). Some of these checks may restrict the characters allowed in
+       a tag name.
+
+   &lt;commit&gt;, &lt;object&gt;
+       The object that the new tag will refer to, usually a commit. Defaults to HEAD.
+        </pre>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingCherryPick">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseCherryPick" aria-expanded="false" aria-controls="collapseCherryPick">
+          git-cherry-pick
+        </a>
+      </h4>
+    </div>
+    <div id="collapseCherryPick" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingCherryPick">
+      <div class="panel-body">
+        <h5>Apply the changes introduced by some existing commits.</h5>
+        <p><b>USAGE</b></p>
+        <pre>
+git cherry-pick [--edit] [-n] [-m parent-number] [-s] [-x] [--ff]
+                [-S[&lt;key-id&gt;]] &lt;commit&gt;...
+git cherry-pick --continue
+git cherry-pick --quit
+git cherry-pick --abort
+        </pre>
+        <p><b>DESCRIPTION</b></p>
+        <p>
+        Given one or more existing commits, apply the change each one introduces, recording a new commit for
+        each. This requires your working tree to be clean (no modifications from the HEAD commit).
+        <br><br>
+        When it is not obvious how to apply a change, the following happens:
+        <ol>
+        <li>The current branch and HEAD pointer stay at the last commit successfully made.</li>
+        <li>The CHERRY_PICK_HEAD ref is set to point at the commit that introduced the change that is difficult to apply.</li>
+        <li>Paths in which the change applied cleanly are updated both in the index file and in your working tree.</li>
+        <li>For conflicting paths, the index file records up to three versions, as described in the "TRUE MERGE" section of git-merge(1). The working tree files will include a description of the conflict bracketed by the usual conflict markers &lt;&lt;&lt;&lt;&lt;&lt;&lt; and &gt;&gt;&gt;&gt;&gt;&gt;&gt;.</li>
+        <li>No other modifications are made.</li>
+        </ol>
+        See git-merge(1) for some hints on resolving such conflicts.
+        </p>
+        <p><b>OPTIONS</b></p>
+        <pre>
+   &lt;commit&gt;...
+       Commits to cherry-pick. For a more complete list of ways to spell commits, see gitrevisions(7).
+       Sets of commits can be passed but no traversal is done by default, as if the --no-walk option
+       was specified, see git-rev-list(1). Note that specifying a range will feed all &lt;commit&gt;...
+       arguments to a single revision walk (see a later example that uses maint master..next).
+
+   -e, --edit
+       With this option, git cherry-pick will let you edit the commit message prior to committing.
+
+   -x
+       When recording the commit, append a line that says "(cherry picked from commit ...)" to the
+       original commit message in order to indicate which commit this change was cherry-picked from.
+       This is done only for cherry picks without conflicts. Do not use this option if you are
+       cherry-picking from your private branch because the information is useless to the recipient. If
+       on the other hand you are cherry-picking between two publicly visible branches (e.g. backporting
+       a fix to a maintenance branch for an older release from a development branch), adding this
+       information can be useful.
+
+   -r
+       It used to be that the command defaulted to do -x described above, and -r was to disable it. Now
+       the default is not to do -x so this option is a no-op.
+
+   -m parent-number, --mainline parent-number
+       Usually you cannot cherry-pick a merge because you do not know which side of the merge should be
+       considered the mainline. This option specifies the parent number (starting from 1) of the
+       mainline and allows cherry-pick to replay the change relative to the specified parent.
+
+   -n, --no-commit
+       Usually the command automatically creates a sequence of commits. This flag applies the changes
+       necessary to cherry-pick each named commit to your working tree and the index, without making
+       any commit. In addition, when this option is used, your index does not have to match the HEAD
+       commit. The cherry-pick is done against the beginning state of your index.
+
+       This is useful when cherry-picking more than one commits' effect to your index in a row.
+
+   -s, --signoff
+       Add Signed-off-by line at the end of the commit message.
+
+   -S[&lt;key-id&gt;], --gpg-sign[=&lt;key-id&gt;]
+       GPG-sign commits.
+
+   --ff
+       If the current HEAD is the same as the parent of the cherry-pick'ed commit, then a fast forward
+       to this commit will be performed.
+
+   --allow-empty
+       By default, cherry-picking an empty commit will fail, indicating that an explicit invocation of
+       git commit --allow-empty is required. This option overrides that behavior, allowing empty
+       commits to be preserved automatically in a cherry-pick. Note that when "--ff" is in effect,
+       empty commits that meet the "fast-forward" requirement will be kept even without this option.
+       Note also, that use of this option only keeps commits that were initially empty (i.e. the commit
+       recorded the same tree as its parent). Commits which are made empty due to a previous commit are
+       dropped. To force the inclusion of those commits use --keep-redundant-commits.
+
+   --allow-empty-message
+       By default, cherry-picking a commit with an empty message will fail. This option overrides that
+       behaviour, allowing commits with empty messages to be cherry picked.
+
+   --keep-redundant-commits
+       If a commit being cherry picked duplicates a commit already in the current history, it will
+       become empty. By default these redundant commits are ignored. This option overrides that
+       behavior and creates an empty commit object. Implies --allow-empty.
+
+   --strategy=&lt;strategy&gt;
+       Use the given merge strategy. Should only be used once. See the MERGE STRATEGIES section in git-
+       merge(1) for details.
+
+   -X&lt;option&gt;, --strategy-option=&lt;option&gt;
+       Pass the merge strategy-specific option through to the merge strategy. See git-merge(1) for
+       details.
+		</pre>
+      </div>
+    </div>
+  </div>
+</div>
