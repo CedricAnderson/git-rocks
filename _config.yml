@@ -1,11 +1,11 @@
 # Site settings
 title: Git Rocks
-email: vincent@git.rocks
+email: cid008@hotmail.com
 description: Git Rocks is an interactive tutorial for Git from getting started to release management
 baseurl: ""
 url: "http://git.rocks"
 twitter_username: git_rocks
-github_username:  vlamanna/git-rocks
+github_username:  Cid008/git-rocks
 
 # Build settings
 markdown: kramdown
